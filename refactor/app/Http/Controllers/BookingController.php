@@ -35,12 +35,12 @@ class BookingController extends Controller
      */
     public function index(Request $request)
     {
-        if($user_id = $request->get('user_id')) {
+        if($user_id === $request->get('user_id')) {
 
             $response = $this->repository->getUsersJobs($user_id);
-
         }
-        elseif($request->__authenticatedUser->user_type == env('ADMIN_ROLE_ID') || $request->__authenticatedUser->user_type == env('SUPERADMIN_ROLE_ID'))
+        //instead using env, it's better to use config.
+        elseif($request->__authenticatedUser->user_type == env('ADMIN_ROLE_ID') || $request->__authenticatedUser->user_type === env('SUPERADMIN_ROLE_ID'))
         {
             $response = $this->repository->getAll($request);
         }
@@ -65,6 +65,10 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
+        /*
+        There is no validation which might lead to security vulnerabilities.
+        it effects the performance with large data and as well as consistency.
+        */
         $data = $request->all();
 
         $response = $this->repository->store($request->__authenticatedUser, $data);
@@ -224,7 +228,7 @@ class BookingController extends Controller
         }
         
         if ($data['manually_handled'] == 'true') {
-            $manually_handled = 'yes';
+            $manually_handled = 'yes'; 
         } else {
             $manually_handled = 'no';
         }
@@ -282,7 +286,7 @@ class BookingController extends Controller
         $data = $request->all();
         $job = $this->repository->find($data['jobid']);
         $job_data = $this->repository->jobToData($job);
-
+        //only here exceptional handling is used.
         try {
             $this->repository->sendSMSNotificationToTranslator($job);
             return response(['success' => 'SMS sent']);
