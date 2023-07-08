@@ -1,4 +1,6 @@
-# Digital-Tolk Test
+# How to Review a Laravel Code
+
+### Here are some tips separated into good and bad points. When you want to review a  code, you should always keep the points in mind. 
 
 
 ## Good Points
